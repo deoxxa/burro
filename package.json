@@ -6,7 +6,10 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha -R nyan"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/naomik/burro.git"
+  },
   "keywords": [
     "json",
     "stream",
