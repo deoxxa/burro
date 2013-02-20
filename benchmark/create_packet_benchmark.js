@@ -5,7 +5,7 @@ var suite = new Benchmark.Suite;
 
 suite.add('Buffer.concat 100 B', function() {
   crypto.randomBytes(100, function(error, bytes){;
-    var buf = Buffer.concat([new Buffer(0), bytes]);
+    var buf = Buffer.concat([new Buffer(4), bytes]);
     buf.writeUInt32BE(buf.length, 0);
   });
 });
@@ -30,7 +30,7 @@ suite.add('buffer.copy 100 B', function() {
 
 suite.add('Buffer.concat 1 KB', function() {
   crypto.randomBytes(1024, function(error, bytes){;
-    var buf = Buffer.concat([new Buffer(0), bytes]);
+    var buf = Buffer.concat([new Buffer(4), bytes]);
     buf.writeUInt32BE(buf.length, 0);
   });
 });
