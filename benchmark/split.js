@@ -1,15 +1,6 @@
-// split 100 B x 26,213 ops/sec ±3.58% (62 runs sampled) 
-// burro 100 B x 22,265 ops/sec ±3.70% (73 runs sampled) <<<
-// split 1024 KB x 19,674 ops/sec ±2.30% (83 runs sampled)
-// burro 1024 KB x 17,227 ops/sec ±2.09% (77 runs sampled)
-// Fastest is split 100 B
-
-// NOTES: split converts all buffers to strings which could have potentially
-// bad side effects; still favoring Burro's write/read
-
 var Benchmark = require("benchmark"),
     crypto    = require("crypto"),
-    burro     = require("../lib/burro");
+    Burro     = require("../lib/burro");
 
 // -----------------------------------------------------------
 // create some sender/receiver streams
@@ -61,9 +52,10 @@ suite.add('split 100 B', function() {
 });
 
 suite.add('burro 100 B', function() {
-  var upstream = new burro.Sender();
-  var downstream = new burro.Receiver();
-  upstream.pipe(downstream);
+  var client = new Burro();
+  var server = new Burro();
+  var upstream = client.send();
+  var downstream = server.receive(upstream);
   // upstream.on("packet", function(packet) {    //UNCOMMENT
   //   console.log("sending:", packet);          //UNCOMMENT
   // });                                         //UNCOMMENT
@@ -76,7 +68,7 @@ suite.add('burro 100 B', function() {
   
 });
 
-suite.add('split 1024 KB', function() {
+suite.add('split 1 KB', function() {
   var sender = new Sender();
   var receiver = new Receiver();
   sender.pipe(receiver);
@@ -85,10 +77,11 @@ suite.add('split 1024 KB', function() {
   });
 });
 
-suite.add('burro 1024 KB', function() {
-  var upstream = new burro.Sender();
-  var downstream = new burro.Receiver();
-  upstream.pipe(downstream);
+suite.add('burro 1 KB', function() {
+  var client = new Burro();
+  var server = new Burro();
+  var upstream = client.send();
+  var downstream = server.receive(upstream);
   crypto.randomBytes(1024, function(error, bytes) {
     upstream.pack(bytes.toString('base64'));
   });

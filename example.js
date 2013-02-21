@@ -1,32 +1,36 @@
 #!/usr/bin/env node
 
-var Burro = require("./lib/burro");
+var burro = require("./lib/burro");
 
 // --------------------------------------------------------------
-// send somes stuff
-var client = new Burro();
-var upstream = client.send();
+// send some stuff
+var client = new burro.Sender();
 
-upstream.on("packet", function(packet) {
+client.on("packet", function(packet) {
   console.log("sending:", packet);
 });
 
-upstream
+client
   .pack({message: "どもうありがとう！", from: "japan", to: "usa"})
   .pack({message: "thank you!", from: "usa", to: "japan"});
 
 
 // --------------------------------------------------------------
 // receive some stuff
-var server = new Burro();
-var downstream = server.receive(upstream);
-downstream.on("packet", function(packet) {
+var server = new burro.Receiver();
+
+server.on("packet", function(packet) {
   console.log("received:", packet);
 });
 
 
 // --------------------------------------------------------------
+// cross the streams!
+client.pipe(server);
+
+
+// --------------------------------------------------------------
 // send some more; pipe remains open
 setTimeout(function() {
-  upstream.pack("^.^");
+  client.pack("^.^");
 }, 1000);
