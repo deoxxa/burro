@@ -1,32 +1,28 @@
 #!/usr/bin/env node
 
-var Burro = require("./lib/burro");
+var burro  = require("./lib/burro"),
+    stream = require("stream");
 
-// --------------------------------------------------------------
-// send somes stuff
-var client = new Burro();
-var upstream = client.send();
+// dummy socket
+var socket = new stream.PassThrough();
+    
+// wrap! auto encode/decode json frames
+var gladOS = burro.wrap(socket);
 
-upstream.on("packet", function(packet) {
-  console.log("sending:", packet);
-});
+// dummy parser; extracts message from payload
+var parser = new stream.Transform();
+parser._transform = function _transform (obj, output, done) {
+  output(new Buffer(obj.from + " says: " + obj.message + "\n"));
+  done();
+};
 
-upstream
-  .pack({message: "どもうありがとう！", from: "japan", to: "usa"})
-  .pack({message: "thank you!", from: "usa", to: "japan"});
+// cross the streams!
+gladOS.pipe(parser).pipe(process.stdout);
 
+// send data
+gladOS.write({message: "どもうありがとう！", from: "japan", to: "usa"});
+gladOS.write({message: "thank you!", from: "usa", to: "japan"});
 
-// --------------------------------------------------------------
-// receive some stuff
-var server = new Burro();
-var downstream = server.receive(upstream);
-downstream.on("packet", function(packet) {
-  console.log("received:", packet);
-});
-
-
-// --------------------------------------------------------------
-// send some more; pipe remains open
-setTimeout(function() {
-  upstream.pack("^.^");
-}, 1000);
+// output
+// japan says: どもうありがとう！
+// usa says: thank you!

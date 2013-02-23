@@ -1,36 +1,32 @@
 var assert    = require("assert"),
-    Burro     = require("../lib/burro");
+    burro     = require("../lib/burro"),
+    stream    = require("stream");
 
 describe("Burro", function(){
 
-  var bob, alice, upstream, downstream;
+  var bob, alice;
 
   beforeEach(function() {
-    // sender
-    bob = new Burro();
-    upstream = bob.send();
-    
-    // receiver
-    alice = new Burro();
-    downstream = alice.receive(upstream);
+    bob   = burro.encoder();
+    alice = burro.decoder();
+    bob.pipe(alice);
   });
 
-
   it("should serialize a simple string", function(done){
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.equal("hello", packet);
       done();
     });
-    upstream.pack("hello");
+    bob.write("hello");
   });
 
   it("should serialize a simple object", function(done){
     var obj = {a: "a", b: "b"};
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.deepEqual(obj, packet);
       done();
     });
-    upstream.pack(obj);
+    bob.write(obj);
   });
 
   it("should serialize a complex object", function(done){
@@ -41,11 +37,11 @@ describe("Burro", function(){
         {type: "mau5", name: "dead"}
       ]
     };
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.deepEqual(obj, packet);
       done();
     });
-    upstream.pack(obj);
+    bob.write(obj);
   });
 
   it("should serialize multiple objects", function(done) {
@@ -54,29 +50,29 @@ describe("Burro", function(){
       {foo: "bar", zim: "gir", dib: "gaz"},
       {string: "yay", number: 123, hex: 0xff}
     ];
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.deepEqual(queue.shift(), packet);
       if (queue.length === 0) {
         done();
       }
     });
     queue.forEach(function(obj) {
-      upstream.pack(obj);
+      bob.write(obj);
     });    
   });
 
   it("should serialize utf8 properly", function(done) {
     var message = "どうもありがとう";
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.equal(message, packet);
       done();
     });
-    upstream.pack(message);
+    bob.write(message);
   });
 
   it("should work with a 10 MB packet", function(done) {
     var str;
-    downstream.on("packet", function(packet) {
+    alice.on("packet", function(packet) {
       assert.deepEqual(str, packet);
       done();
     });
@@ -85,8 +81,20 @@ describe("Burro", function(){
         done(error);
       }
       str = chunk.toString("base64");
-      upstream.pack(str);
+      bob.write(str);
     });
+  });
+
+  it("should be able to wrap a stream", function(done) {
+    var socket = burro.wrap(new stream.PassThrough()),
+        endpoint = new stream.Writable,
+        obj = {a: "b", c: "d"};
+    endpoint._write = function _write(chunk, _) {
+      assert.deepEqual(obj, chunk);
+      done();
+    };
+    socket.pipe(endpoint);
+    socket.write(obj);
   });
   
 });

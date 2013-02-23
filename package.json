@@ -1,6 +1,6 @@
 {
   "name": "burro",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "auto-packaged, length-prefixed JSON byte streams",
   "main": "lib/burro",
   "scripts": {
@@ -16,7 +16,7 @@
     "buffer",
     "streams2"
   ],
-  "engines": { 
+  "engines": {
     "node": "~0.9"
   },
   "author": "Naomi Kyoto <nakyoto@gmail.com>",
