@@ -1,6 +1,6 @@
 {
   "name": "burro",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "auto-packaged, length-prefixed JSON byte streams",
   "main": "lib/burro",
   "scripts": {
