@@ -8,14 +8,14 @@ describe("Encoder", function(){
 
   beforeEach(function() {
     encoder  = new burro.Encoder();
-    writable = new stream.Writable();
+    writable = new stream.Writable({objectMode: true});
     encoder.pipe(writable);
   });
 
   it("should encode a string", function(done) {
     var expected = "hello";
     writable._write = function(chunk, _) {
-      assert.equal(chunk, JSON.stringify(expected));
+      assert.strictEqual(chunk, JSON.stringify(expected));
       done();
     };
     encoder.write(expected);
@@ -24,7 +24,7 @@ describe("Encoder", function(){
   it("should encode an object", function(done) {
     var expected = {a: "b", c: "d"};
     writable._write = function(chunk, _) {
-      assert.equal(chunk, JSON.stringify(expected));
+      assert.strictEqual(chunk, JSON.stringify(expected));
       done();
     };
     encoder.write(expected);

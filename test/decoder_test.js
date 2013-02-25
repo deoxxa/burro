@@ -8,14 +8,14 @@ describe("Decoder", function(){
 
   beforeEach(function() {
     decoder  = new burro.Decoder();
-    writable = new stream.Writable();
+    writable = new stream.Writable({objectMode: true});
     decoder.pipe(writable);
   });
 
   it("should decode a string", function(done) {
     var expected = "hello";
     writable._write = function(chunk, _) {
-      assert.equal(chunk, expected);
+      assert.strictEqual(chunk, expected);
       done();
     };
     decoder.write(JSON.stringify(expected));

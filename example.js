@@ -3,25 +3,26 @@
 var burro  = require("./lib/burro"),
     stream = require("stream");
 
-// dummy socket
-var socket = new stream.PassThrough();
+// dummy i/o
+var dummy = new stream.PassThrough();
     
 // wrap! auto encode/decode json frames
-var gladOS = burro.wrap(socket);
+var socket = burro.wrap(dummy);
+
+// send data
+socket.write({message: "どもうありがとう！", from: "japan", to: "usa"});
+socket.write({message: "thank you!", from: "usa", to: "japan"});
 
 // dummy parser; extracts message from payload
-var parser = new stream.Transform();
+var parser = new stream.Transform({objectMode: true});
 parser._transform = function _transform (obj, output, done) {
-  output(new Buffer(obj.from + " says: " + obj.message + "\n"));
+  var str = obj.from + " says: " + obj.message + "\n";
+  output(str);
   done();
 };
 
 // cross the streams!
-gladOS.pipe(parser).pipe(process.stdout);
-
-// send data
-gladOS.write({message: "どもうありがとう！", from: "japan", to: "usa"});
-gladOS.write({message: "thank you!", from: "usa", to: "japan"});
+socket.pipe(parser).pipe(process.stdout);
 
 // output
 // japan says: どもうありがとう！
