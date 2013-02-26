@@ -4,13 +4,14 @@ var assert    = require("assert"),
 
 describe("Burro", function(){
 
-  var bob, alice, socket;
+  var bob, alice, _socket, socket;
 
   beforeEach(function() {
     bob   = new stream.Readable({objectMode: true});
     bob._read = function _read() {};
     alice = new stream.Writable({objectMode: true});
-    socket = burro.wrap(new stream.PassThrough());
+    _socket = new stream.PassThrough();
+    socket = burro.wrap(_socket);
     bob.pipe(socket).pipe(alice);
   });
 
@@ -85,5 +86,51 @@ describe("Burro", function(){
       bob.push(expected);
     });
   });
-  
+
+  it("should bubble `pipe' events", function(done) {
+    socket.on("pipe", function() {
+      done();
+    });
+
+    var pipeFrom = new stream.Readable();
+    pipeFrom._read = function () {};
+    pipeFrom.pipe(_socket);
+  });
+
+  it("should bubble `unpipe' events", function(done) {
+    socket.on("unpipe", function() {
+      done();
+    });
+
+    socket.on("pipe", function() {
+      pipeFrom.unpipe(socket);
+    });
+
+    var pipeFrom = new stream.Readable();
+    pipeFrom._read = function () {};
+    pipeFrom.pipe(_socket);
+  });
+
+  it("should bubble `end' events", function(done) {
+    socket.on("end", function() {
+      done();
+    });
+    _socket.end();
+  });
+
+  it("should bubble `close' events", function(done) {
+    socket.on("close", function() {
+      done();
+    });
+    _socket.end();
+    _socket.emit("close");
+  });
+
+  it("should bubble `error' events", function(done) {
+    socket.on("error", function() {
+      done();
+    });
+    _socket.emit("error", Error("RAISE NEW PROBLEM"));
+  });
+
 });
