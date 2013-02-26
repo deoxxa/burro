@@ -53,9 +53,9 @@ describe("Burro", function(){
       {foo: "bar", zim: "gir", dib: "gaz"},
       {string: "yay", number: 123, hex: 0xff}
     ];
-    alice._write = function(obj, _) {
+    alice._write = function(obj, _done) {
       assert.deepEqual(obj, expected.shift());
-      _();
+      _done();
       if (expected.length === 0) {
         done();
       }
