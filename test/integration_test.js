@@ -85,5 +85,29 @@ describe("Burro", function(){
       bob.push(expected);
     });
   });
-  
+
+  it("should emit its own `pipe' events", function(done) {
+    socket.on("pipe", function() {
+      done();
+    });
+
+    var pipeFrom = new stream.Readable();
+    pipeFrom._read = function () {};
+    pipeFrom.pipe(socket);
+  });
+
+  it("should emit its own `unpipe' events", function(done) {
+    socket.on("unpipe", function() {
+      done();
+    });
+
+    socket.on("pipe", function() {
+      pipeFrom.unpipe(socket);
+    });
+
+    var pipeFrom = new stream.Readable();
+    pipeFrom._read = function () {};
+    pipeFrom.pipe(socket);
+  });
+
 });
