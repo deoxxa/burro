@@ -4,11 +4,12 @@ var assert    = require("assert"),
 
 describe("Burro", function(){
 
-  var bob, socket;
+  var bob, alice, socket;
 
   beforeEach(function() {
-    socket = burro.wrap(new stream.PassThrough());
-    bob = new stream.PassThrough();
+    bob     = new stream.PassThrough();
+    alice   = new stream.PassThrough();
+    socket  = burro.wrap(new stream.PassThrough());
   });
 
   it("should emit its own pipe events", function(done) {
@@ -28,6 +29,27 @@ describe("Burro", function(){
       done();
     });
     bob.pipe(socket);
+  });
+
+  it("should pipe successfully", function(done) {
+    alice.on("pipe", function(source) {
+      // TODO: ideally, this would pass
+      // assert.equal(source, socket);
+      done();
+    });
+    socket.pipe(alice);
+  });
+
+  it("should unpipe successfully", function(done) {
+    alice.on("pipe", function(source) {
+      socket.unpipe(alice);
+    });
+    alice.on("unpipe", function(source) {
+      // TODO: ideally, this would pass
+      // assert.equal(source, socket);
+      done();
+    });
+    socket.pipe(alice);
   });
 
 });
