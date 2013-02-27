@@ -8,8 +8,7 @@ describe("Burro", function(){
 
   beforeEach(function() {
     socket = burro.wrap(new stream.PassThrough());
-    bob = new stream.Readable();
-    bob._read = function (bytes, callback) {};
+    bob = new stream.PassThrough();
   });
 
   it("should emit its own pipe events", function(done) {
