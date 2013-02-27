@@ -30,4 +30,23 @@ describe("Burro", function(){
     bob.pipe(socket);
   });
 
+  it("should pipe successfully", function(done) {
+    bob.on("pipe", function() {
+      done();
+    });
+    socket.pipe(bob);
+  });
+
+  it("should unpipe successfully", function(done) {
+    bob.on("pipe", function() {
+      bob.on("unpipe", function() {
+        done();
+      });
+
+      socket.unpipe(bob);
+    });
+
+    socket.pipe(bob);
+  });
+
 });
