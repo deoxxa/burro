@@ -22,9 +22,9 @@ socket.write({message: "thank you!", from: "usa", to: "japan"});
 
 // dummy parser; extracts message from payload
 var parser = new stream.Transform({objectMode: true});
-parser._transform = function _transform (obj, output, done) {
+parser._transform = function _transform (obj, encoding, done) {
   var str = obj.from + " says: " + obj.message + "\n";
-  output(str);
+  this.push(str);
   done();
 };
 
