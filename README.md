@@ -51,7 +51,6 @@ socket.pipe(parser).pipe(process.stdout);
 
 
 Output
-------
 
 ```
 japan says: どもうありがとう！
@@ -76,13 +75,13 @@ API
 
 **wrap**
 
-```js
-var socket = burro.wrap([duplexStream]);
-```
-
 This is burro's easy mode. It will automatically construct the entire burro
 chain around your existing duplex stream. If you want to configure the burro
 chain manually, please see [lib/burro.js][lib]
+
+```js
+var socket = burro.wrap([duplexStream]);
+```
 
 Arguments
 
