@@ -1,7 +1,25 @@
 Burro
 =====
 
-Burro is a useful creature that auto-packages objects in length-prefixed JSON byte streams.
+Burro is a useful creature that auto-packages objects in length-prefixed JSON
+byte streams.
+
+
+Overview
+--------
+
+Burro is made up of **4 streams** that makes sending/receiving objects a breeze
+
+Sender streams:
+
+* _burro.Encoder_ - encodes objects into proper JSON strings
+* _burro.Framer_ - frames JSON in a **uint32be** length-prefixed buffer
+
+Receiver streams:
+
+* _burro.Unframer_ - processes length prefix and parses out JSON
+* _burro.Decoder_ - decodes JSON into objects
+
 
 Example
 -------
@@ -10,11 +28,11 @@ Example
 var burro  = require("burro"),
     stream = require("stream");
 
-// dummy i/o
-var dummy = new stream.PassThrough();
+// dummy network stream
+var network = new stream.PassThrough();
     
 // wrap! auto encode/decode json frames
-var socket = burro.wrap(dummy);
+var socket = burro.wrap(network);
 
 // send data
 socket.write({message: "どもうありがとう！", from: "japan", to: "usa"});
@@ -23,8 +41,7 @@ socket.write({message: "thank you!", from: "usa", to: "japan"});
 // dummy parser; extracts message from payload
 var parser = new stream.Transform({objectMode: true});
 parser._transform = function _transform (obj, encoding, done) {
-  var str = obj.from + " says: " + obj.message + "\n";
-  this.push(str);
+  this.push(obj.from + " says: " + obj.message + "\n");
   done();
 };
 
@@ -42,12 +59,58 @@ usa says: thank you!
 ```
 
 
+Installation
+------------
+
+Available via [npm][burro]:
+
+> $ npm install burro
+
+Or via git:
+
+> $ git clone git://github.com/naomik/burro.git node_modules/burro
+
+
+API
+---
+
+**wrap**
+
+```js
+var socket = burro.wrap([duplexStream]);
+```
+
+This is burro's easy mode. It will automatically construct the entire burro
+chain around your existing duplex stream. If you want to configure the burro
+chain manually, please see [lib/burro.js][lib]
+
+Arguments
+
+* _duplexStream_ - an object implementing the streams2 "duplex stream" API. It
+  must have the following functions defined: `read`, `write`, `pipe`, `unpipe`.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
 Tests
 -----
 
-requires: `npm install mocha`
+Burro is a pretty versatile beast and can even handle very large payloads. It is
+also tested against network packet **fragmenting** and **buffering**, thanks to
+[hiccup][hiccup]. See the [tests][tests] for more details.
 
-Burro is a pretty versatile beast and can even handle very large payloads.
-See the [tests][1] for more details.
+Development dependencies: 
 
-[1]: https://github.com/naomik/burro/tree/master/test
+* [mocha][mocha]
+* [hiccup][hiccup]
+
+> $ npm install mocha
+
+> $ npm install hiccup
+
+[burro]: https://npmjs.org/package/burro
+[lib]: https://github.com/naomik/burro/blob/master/lib/burro.js#L10-L14
+[tests]: https://github.com/naomik/burro/tree/master/test
+[mocha]: https://npmjs.org/package/mocha
+[hiccup]: https://npmjs.org/package/hiccup

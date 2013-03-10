@@ -3,11 +3,11 @@
 var burro  = require("./lib/burro"),
     stream = require("stream");
 
-// dummy i/o
-var dummy = new stream.PassThrough();
+// dummy network stream
+var network = new stream.PassThrough();
     
 // wrap! auto encode/decode json frames
-var socket = burro.wrap(dummy);
+var socket = burro.wrap(network);
 
 // send data
 socket.write({message: "どもうありがとう！", from: "japan", to: "usa"});
@@ -16,8 +16,7 @@ socket.write({message: "thank you!", from: "usa", to: "japan"});
 // dummy parser; extracts message from payload
 var parser = new stream.Transform({objectMode: true});
 parser._transform = function _transform (obj, encoding, done) {
-  var str = obj.from + " says: " + obj.message + "\n";
-  this.push(str);
+  this.push(obj.from + " says: " + obj.message + "\n");
   done();
 };
 
