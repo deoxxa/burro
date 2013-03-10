@@ -85,8 +85,8 @@ var socket = burro.wrap([duplexStream]);
 
 Arguments
 
-* _duplexStream_ - an object implementing the streams2 "duplex stream" API. It
-  must have the following functions defined: `read`, `write`, `pipe`, `unpipe`.
+* _duplexStream_ - an object implementing the `stream.Duplex` API. It must have 
+  the following functions defined: `_read`, `_write`, `pipe`, `unpipe`.
 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
