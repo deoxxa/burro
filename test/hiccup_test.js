@@ -3,7 +3,7 @@ var assert    = require("assert"),
     hiccup    = require("hiccup"),
     burro     = require("../lib/burro");
 
-describe("Burro", function(){
+describe("burro.wrap(slow)", function(){
 
   it("should receive objects from a slow stream", function(done) {
     

@@ -2,7 +2,7 @@ var assert    = require("assert"),
     burro     = require("../lib/burro"),
     stream    = require("stream");
 
-describe("Burro", function(){
+describe("burro.wrap pipe events", function(){
 
   var bob, alice, socket;
 

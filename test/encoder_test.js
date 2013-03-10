@@ -2,7 +2,7 @@ var assert    = require("assert"),
     burro     = require("../lib/burro"),
     stream    = require("stream");
 
-describe("Encoder", function(){
+describe("burro.Encoder", function(){
 
   var encoder, writable;
 
