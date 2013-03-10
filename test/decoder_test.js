@@ -14,7 +14,7 @@ describe("Decoder", function(){
 
   it("should decode a string", function(done) {
     var expected = "hello";
-    writable._write = function(chunk, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.strictEqual(chunk, expected);
       done();
     };
@@ -23,7 +23,7 @@ describe("Decoder", function(){
 
   it("should decode an object", function(done) {
     var expected = {a: "b", c: "d"};
-    writable._write = function(chunk, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.deepEqual(chunk, expected);
       done();
     };

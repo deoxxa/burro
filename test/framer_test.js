@@ -14,7 +14,7 @@ describe("Framer", function(){
 
   it("should prepend uint32be packet length", function(done) {
     var expected = Buffer([255,255,255,255]);
-    writable._write = function(chunk, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.deepEqual(chunk, Buffer([0,0,0,4,255,255,255,255]));
       done();
     };

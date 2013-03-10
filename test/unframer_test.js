@@ -18,7 +18,7 @@ describe("Unframer", function(){
 
   it("should unframe a packet", function(done) {
     var expected = Buffer([255,255,255,255]);
-    writable._write = function(chunk, encoding, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.deepEqual(chunk, expected);
       done();
     };
@@ -27,7 +27,7 @@ describe("Unframer", function(){
 
   it("should unframe a split packet", function(done) {
     var expected = Buffer([255,255,255,255]);
-    writable._write = function(chunk, encoding, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.deepEqual(chunk, expected);
       done();
     };

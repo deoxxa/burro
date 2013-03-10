@@ -14,7 +14,7 @@ describe("Encoder", function(){
 
   it("should encode a string", function(done) {
     var expected = "hello";
-    writable._write = function(chunk, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.strictEqual(chunk, JSON.stringify(expected));
       done();
     };
@@ -23,7 +23,7 @@ describe("Encoder", function(){
 
   it("should encode an object", function(done) {
     var expected = {a: "b", c: "d"};
-    writable._write = function(chunk, _) {
+    writable._write = function(chunk, encoding, callback) {
       assert.strictEqual(chunk, JSON.stringify(expected));
       done();
     };
