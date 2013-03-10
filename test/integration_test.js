@@ -62,7 +62,7 @@ describe("Burro", function(){
     };
     expected.forEach(function(obj) {
       bob.push(obj);
-    });    
+    });
   });
 
   it("should serialize utf8 properly", function(done) {
