@@ -1,4 +1,4 @@
-Burro  [!suild status][build_status]
+Burro  ![build status][build_status]
 =====
 
 Burro is a useful creature that auto-packages objects in length-prefixed JSON
