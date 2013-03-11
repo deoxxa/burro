@@ -1,4 +1,4 @@
-Burro
+Burro  [!suild status][build_status]
 =====
 
 Burro is a useful creature that auto-packages objects in length-prefixed JSON
@@ -108,6 +108,7 @@ Development dependencies:
 
 > $ npm install hiccup
 
+[build_status]: https://travis-ci.org/naomik/burro.png
 [burro]: https://npmjs.org/package/burro
 [lib]: https://github.com/naomik/burro/blob/master/lib/burro.js#L10-L14
 [tests]: https://github.com/naomik/burro/tree/master/test
