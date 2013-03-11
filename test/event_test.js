@@ -8,8 +8,8 @@ describe("burro.wrap events", function(){
 
   beforeEach(function() {
     events = [];
-    bob    = new stream.PassThrough();
-    alice  = new stream.PassThrough();
+    bob    = new stream.PassThrough({objectMode: true});
+    alice  = new stream.PassThrough({objectMode: true});
     metal  = new stream.PassThrough();
     socket = burro.wrap(metal);
     bob.pipe(socket).pipe(alice);
@@ -19,10 +19,10 @@ describe("burro.wrap events", function(){
     var goodbye = function(id) {
       events.push(id);
     };
-    bob.on("end", goodbye.bind(null, "bob"));
-    socket.on("end", goodbye.bind(null, "socket"));
-    metal.on("end", goodbye.bind(null, "metal"));
-    alice.on("end", function() {
+    bob.on("finish", goodbye.bind(null, "bob"));
+    socket.on("finish", goodbye.bind(null, "socket"));
+    metal.on("finish", goodbye.bind(null, "metal"));
+    alice.on("finish", function() {
       assert.deepEqual(events, ["bob", "socket", "metal"]);
       done();
     });
